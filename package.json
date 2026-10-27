@@ -1,0 +1,19 @@
+{
+  "name": "poster-studio",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace @poster-studio/app",
+    "build": "npm run build --workspace @poster-studio/app",
+    "preview": "npm run preview --workspace @poster-studio/app",
+    "test": "npm test --workspace @poster-studio/engine",
+    "typecheck": "npm run typecheck --workspaces"
+  },
+  "devDependencies": {
+    "typescript": "7.0.2"
+  }
+}

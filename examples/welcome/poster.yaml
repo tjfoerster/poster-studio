@@ -1,0 +1,28 @@
+# Settings of the whole poster. Lines starting with # are notes for you; they change nothing.
+
+# The design: a copy of a template file. Leave this line as it is.
+template: template.html
+
+# The language of the poster: en for English, de for German
+# (German hyphenation, "Abb." instead of "Fig.").
+lang: en
+
+# Paper size and text size: remove the # in front of the next four lines to make an A1 poster.
+# The names of all settings are at the top of template.html.
+# settings:
+#   width: 594mm
+#   height: 841mm
+#   font-size: 24pt
+
+# The layout map: a small picture of the poster below its title.
+# Every word is a box and shows the file of the same name in "sections".
+# Write a word twice side by side to make its box twice as wide,
+# or in two rows to make it twice as tall. A box must stay a rectangle.
+layout: |
+  background  methods
+  results     results
+  discussion  conclusion
+
+# The height of each row of the map, from top to bottom: without this line, every row is as tall as its text and
+# space that is left is shared out. Remove the # to give all spare space to the middle row instead ("1fr").
+# rows: auto 1fr auto

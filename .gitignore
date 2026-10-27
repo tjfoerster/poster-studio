@@ -1,0 +1,8 @@
+node_modules/
+dist/
+# Poster folders are user content (they may hold unpublished data); examples/ holds the shared example
+posters/
+# Templates with logos are not published: only the neutral template and the licence of its font are in the repository
+templates/*
+!templates/neutral.html
+!templates/OFL-Jost.txt

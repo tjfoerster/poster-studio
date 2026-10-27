@@ -1,0 +1,11 @@
+# Not part of the image. Dependencies are installed fresh in the build; posters/ may hold unpublished data;
+# templates with logos are not published (provide them at runtime, see README).
+**/node_modules
+**/dist
+.git
+posters
+templates/*
+!templates/neutral.html
+!templates/OFL-Jost.txt
+.claude
+*.log
