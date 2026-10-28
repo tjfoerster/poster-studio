@@ -48,7 +48,19 @@ The map becomes CSS `grid-template-areas`, so the template author and the browse
 
 **Rows and columns.** `rows` and `columns` take CSS track sizes, one per row or column of the map (the editor warns when the numbers differ). `auto` fits the content; `1fr`, `2fr` share what is left in that ratio; lengths like `250mm` are fixed. With the default (`auto` for every row) each box is as tall as its content, and spare space is shared out equally. `rows: auto 1fr auto` gives all spare space to the middle row.
 
-**Text columns.** A box spanning two grid columns sets its text in two columns, so lines stay short enough to read; its first heading spans all of them. `text-columns` changes that per box. In a box with several text columns, `---` on its own line (with an empty line above) starts the next column, and `wide` on a figure (`{… wide}`) spans all of them.
+**Columns with boxes of different heights.** Write each row once; repeating a row changes nothing but how spare space is shared. When each column stacks its own boxes, so that their edges need not line up, give the spare space to the last row:
+
+```yaml
+layout: |
+  background  background  methods
+  results     results     methods
+  results     results     conclusion
+rows: auto auto 1fr
+```
+
+Results starts below Background and Conclusion below Methods, each box is as tall as its content, and the boxes of the last row reach down to the footer.
+
+**Text columns.** A box spanning two grid columns sets its text in two columns, so lines stay short enough to read; its first heading spans all of them. `text-columns` changes that per box. In a box with several text columns, `---` on its own line (with an empty line above) starts the next column. `wide` on a figure, table or chart (`{… wide}`) spans all of them; for text, such as an introduction above two columns of figures, put `:::wide` above it and `:::` below it (see Blocks).
 
 **Reading order.** The poster is read in horizontal bands from top to bottom, and within a band column by column (by the top-left cell of each box). A band ends at a row line that no box crosses, so boxes as wide as the poster below the columns come after them. The reading order decides the numbers of figures, tables and references. `order` lists boxes that come first, in this order; the others follow.
 
@@ -98,10 +110,23 @@ Blocks start a line with `::` (or `:::` around content). The text in `[…]` is 
 |---|---|
 | Picture | `::figure[What the picture shows.]{src=resources/photo.png}` |
 | Narrower picture | `::figure[Caption.]{src=resources/photo.png width=70%}` |
-| Picture over all text columns of a box | `::figure[Caption.]{src=resources/photo.png wide}` |
+| Picture over all text columns of a box | `::figure[Caption.]{src=resources/photo.png wide}` (also on `::table` and `::chart`) |
 | Table from a CSV file | `::table[Caption.]{src=resources/table.csv}` |
 | Chart from a CSV file | `::chart[Caption.]{src=resources/data.csv type=bar y="Patients (n)"}` |
 | Captioned diagram, or a picture with a title above it | see below |
+| Text over all text columns of a box | `:::wide` above the text, `:::` below it |
+
+**`:::wide`** spans all text columns of its box with any Markdown inside (paragraphs, lists, highlighted boxes, figures). The text before it and the text after it each run in columns of their own:
+
+```markdown
+## Results
+
+:::wide
+- LDH release was used as an indicator of membrane damage.
+:::
+
+::figure[…]{src=resources/fig1.png}
+```
 
 **Charts:** the first column holds the labels, each further column is one series (its heading goes into the legend). `type` is `bar` (default), `line` or `pie`; `horizontal` gives horizontal bars; `y` is the axis title; `width` makes the chart narrower. CSV files may use commas, semicolons (German Excel) or tabs, and decimal commas.
 

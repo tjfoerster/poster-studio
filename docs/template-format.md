@@ -63,7 +63,8 @@ Write CSS for these elements; there are no other classes to know.
 | Picture with a title | `figure > div.figure-title` before the picture |
 | Table from CSV | `figure.table > figcaption + table > thead + tbody` |
 | Chart or diagram | `div.diagram > svg` (drawn by Pele; colours from `--pele-*`, see below), inside a `figure` when captioned |
-| Wide figure | `figure.wide` (spans all text columns of its box) |
+| Wide figure, table, chart | `figure.wide` (spans all text columns of its box) |
+| Wide text (`:::wide`) | `div.wide` around the Markdown inside it (spans all text columns) |
 | Column break | `hr` (`---` in the text) |
 | References (references slot) | `section.footnotes > h2 + ol`; the `h2` says "Footnotes" (replace it with a label in CSS, see the neutral template); links back are `a.data-footnote-backref`. Hide an empty slot's container with `:not(:has(li))` |
 | Something wrong | `p.error`, `div.diagram.error` |

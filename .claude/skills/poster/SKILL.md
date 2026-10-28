@@ -76,7 +76,8 @@ rows: auto 1fr auto
 - `> [!name] Text` puts a Lucide icon (names as on https://lucide.dev/icons, e.g. `goal` for the aim, `lightbulb` for the key message, `circle-check-big` for the conclusion) on a highlighted box. Only where it helps the reader find the box.
 - References: `[^label]` with a meaningful label; a label must be defined once in the whole poster. Numbers follow the reading order.
 - Inline HTML only `<sup>`, `<sub>`, `<u>`, `<br>`; notes as `<!-- … -->`. Escape stars for significance: `\*\*p < 0.01`.
-- Layout map: each name covers a rectangle; `.` is an empty cell; every name needs `sections/<name>.md` and every section file must appear in the map.
+- Layout map: each name covers a rectangle; `.` is an empty cell; every name needs `sections/<name>.md` and every section file must appear in the map. Write each row once (repeated rows only change how spare space is shared); for columns that stack boxes of different heights use `rows: auto auto 1fr`.
+- In a box with two text columns: `:::wide` … `:::` around text (an introduction, a key finding) and `{… wide}` on a figure, table or chart span both columns.
 
 Content rules:
 

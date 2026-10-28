@@ -29,7 +29,7 @@ const directiveAttributes = ['dataArgs', 'dataKind']
 const schema = {
   ...defaultSchema,
   clobberPrefix: '',
-  tagNames: [...(defaultSchema.tagNames ?? []), 'u', 'x-figure', 'x-table', 'x-chart', 'x-caption', 'x-error'],
+  tagNames: [...(defaultSchema.tagNames ?? []), 'u', 'x-figure', 'x-table', 'x-chart', 'x-wide', 'x-caption', 'x-error'],
   attributes: { ...defaultSchema.attributes, 'x-figure': directiveAttributes, 'x-table': directiveAttributes, 'x-chart': directiveAttributes },
 }
 
@@ -109,7 +109,7 @@ export async function renderSections(boxes: { area: string; edges: string[]; sou
   return { areas, references, diagnostics }
 }
 
-/** Marks ::figure, :::figure, ::table and ::chart for rehypeBlocks. ":word" inside text stays text ("ratio A:B" is no directive). */
+/** Marks ::figure, :::figure, ::table, ::chart and :::wide for rehypeBlocks. ":word" inside text stays text ("ratio A:B" is no directive). */
 function remarkBlocks() {
   return (tree: MarkdownRoot, file: VFile) => {
     visit(tree, (node, index, parent) => {
@@ -120,8 +120,12 @@ function remarkBlocks() {
       }
       if (node.type !== 'leafDirective' && node.type !== 'containerDirective') return
       const marker = node.type === 'leafDirective' ? '::' : ':::'
+      if (node.type === 'containerDirective' && node.name === 'wide') {
+        node.data = { hName: 'x-wide' }
+        return
+      }
       if (!blockNames.includes(node.name) || (node.type === 'containerDirective' && node.name !== 'figure')) {
-        const message = `Unknown block "${marker}${node.name}". Possible blocks: ::figure, :::figure, ::table, ::chart`
+        const message = `Unknown block "${marker}${node.name}". Possible blocks: ::figure, :::figure, ::table, ::chart, :::wide`
         report(file, 'error', message, node)
         node.data = { hName: 'x-error', hChildren: [{ type: 'text', value: message }] }
         return SKIP

@@ -101,6 +101,20 @@ describe('build', () => {
     expect(html).toContain('<figure><div class="diagram" data-source="xychart\n  x-axis &#x22;Group&#x22; [&#x22;A&#x22;]\n  line &#x22;n&#x22; [1.5]" data-line="3"></div><figcaption>Chart.</figcaption></figure>')
   })
 
+  it('spans all text columns with :::wide and with wide on figures, tables and charts', async () => {
+    const files = poster({
+      'poster.yaml': 'layout: a',
+      'sections/a.md': ':::wide\n- An introduction **over both columns**\n\n::figure{src=resources/a.png}\n:::\n\n::table{src=resources/t.csv wide}\n\n::chart{src=resources/t.csv wide}',
+      'resources/a.png': '',
+      'resources/t.csv': 'Group,n\nA,1\n',
+    })
+    const { html, diagnostics } = await build({ files, resolveUrl })
+    expect(diagnostics).toEqual([])
+    expect(html).toContain('<div class="wide"><ul>\n<li>An introduction <strong>over both columns</strong></li>\n</ul><figure><img src="blob:resources/a.png" alt=""></figure></div>')
+    expect(html).toContain('<figure class="table wide"><table>')
+    expect(html).toContain('<figure class="wide"><div class="diagram"')
+  })
+
   it('reports problems with the file and line where they can be fixed, and keeps building', async () => {
     const files = poster({
       'poster.yaml': 'layout: a',
@@ -109,7 +123,7 @@ describe('build', () => {
     })
     const { html, diagnostics } = await build({ files, resolveUrl })
     expect(diagnostics).toEqual([
-      { severity: 'error', message: 'Unknown block "::foto". Possible blocks: ::figure, :::figure, ::table, ::chart', file: 'sections/a.md', line: 3 },
+      { severity: 'error', message: 'Unknown block "::foto". Possible blocks: ::figure, :::figure, ::table, ::chart, :::wide', file: 'sections/a.md', line: 3 },
       { severity: 'error', message: 'File not found: resources/Photo.png (did you mean resources/photo.png? Capital letters must match)', file: 'sections/a.md', line: 5 },
       { severity: 'error', message: 'File not found: resources/missing.csv', file: 'sections/a.md', line: 7 },
       { severity: 'warning', message: 'Unknown icon "no-such-icon". Find the name of an icon on https://lucide.dev/icons', file: 'sections/a.md', line: 9 },

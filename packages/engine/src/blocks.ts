@@ -1,4 +1,4 @@
-// The engine's own markup, added after raw HTML has been sanitized: ::figure, ::table, ::chart, ```mermaid diagrams,
+// The engine's own markup, added after raw HTML has been sanitized: ::figure, ::table, ::chart, :::wide, ```mermaid diagrams,
 // and the files behind pictures. Diagrams are placeholders (<div class="diagram" data-source>) that finish() draws.
 import type { Element, ElementContent, Root } from 'hast'
 import { SKIP, visit } from 'unist-util-visit'
@@ -35,6 +35,8 @@ export function rehypeBlocks(resources: Resources) {
 
     visit(tree, 'element', (node) => {
       if (node.tagName === 'img') picture(node, resources, file)
+      // :::wide … ::: spans all text columns of its box
+      if (node.tagName === 'x-wide') Object.assign(node, { tagName: 'div', properties: { className: ['wide'] } })
       // An unknown directive (reported by remarkBlocks)
       if (node.tagName === 'x-error') Object.assign(node, { tagName: 'p', properties: { className: ['error'] } })
     })
@@ -72,10 +74,11 @@ function figure(node: Element, file: VFile): Element {
   ])
 }
 
-/** ::table[Caption]{src=resources/data.csv}, or ::chart[Caption]{src=… type=bar|line|pie y="Axis title" horizontal width=80%}. */
+/** ::table[Caption]{src=resources/data.csv wide}, or ::chart[Caption]{src=… type=bar|line|pie y="Axis title" horizontal width=80% wide}. */
 async function dataBlock(node: Element, resources: Resources, file: VFile): Promise<Element> {
   const { src, type = 'bar', y, width, ...rest } = argsOf(node)
   const kind = node.tagName.slice(2)
+  const wide = isWide(rest) ? ['wide'] : []
   const caption = node.children.length > 0 ? [h('figcaption', {}, node.children)] : []
   if (!src) return error(file, `::${kind} needs a CSV file, for example ::${kind}[Caption]{src=resources/data.csv}`, node)
   const path = find(src, resources, file, node)
@@ -85,11 +88,11 @@ async function dataBlock(node: Element, resources: Resources, file: VFile): Prom
 
   if (kind === 'table') {
     const cells = (row: string[], tagName: string) => h('tr', {}, row.map((cell) => h(tagName, {}, [{ type: 'text', value: cell }])))
-    return h('figure', { className: ['table'] }, [...caption, h('table', {}, [h('thead', {}, [cells(head, 'th')]), h('tbody', {}, body.map((row) => cells(row, 'td')))])])
+    return h('figure', { className: ['table', ...wide] }, [...caption, h('table', {}, [h('thead', {}, [cells(head, 'th')]), h('tbody', {}, body.map((row) => cells(row, 'td')))])])
   }
   if (!chartTypes.includes(type)) report(file, 'warning', `type="${type}" is not a chart type; use bar, line or pie`, node)
   const source = chartSource([head, ...body], { type: chartTypes.includes(type) ? type : 'bar', y, horizontal: 'horizontal' in rest })
-  return h('figure', {}, [...sized([diagram(source, node)], width, node, file), ...caption])
+  return h('figure', wide.length ? { className: wide } : {}, [...sized([diagram(source, node)], width, node, file), ...caption])
 }
 
 /** Pictures are files of the poster folder; the page shows them through resources.url (a blob: URL in the browser). */

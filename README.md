@@ -1,5 +1,7 @@
 # Poster Studio
 
+> **Note:** Poster Studio is a hobby project at an early stage of development, so bugs or unexpected behaviour may still occur. Check every poster carefully before you print it.
+
 Make a scientific poster by writing its text in a few simple text files. You see the poster while you write, place its boxes on a grid, and save it as a PDF. No programming needed.
 
 <img src="docs/example.png" alt="Example poster" width="420">
@@ -111,9 +113,9 @@ layout: |
 ```
 
 - Repeat a name to make its box wider or taller; a box must be a rectangle.
-- A box that is two columns wide sets its text in two columns. `---` on its own line (with an empty line above it) starts its next column.
+- A box that is two columns wide sets its text in two columns. `---` on its own line (with an empty line above it) starts its next column. `:::wide` above and `:::` below a text spans it over both columns; `wide` does the same for a figure (`{src=… wide}`).
 - A dot `.` leaves a space empty.
-- `rows: auto 1fr auto` sets the heights of the rows: `auto` fits the content, `1fr` takes the space that is left.
+- `rows: auto 1fr auto` sets the heights of the rows: `auto` fits the content, `1fr` takes the space that is left. Write each row once; to let each column stack its boxes independently, give the last row `1fr` (`rows: auto auto 1fr`).
 - A box as wide as the poster works as a row of its own: its heading spans the box, its text runs in columns below.
 - The poster is read in rows from top to bottom (a new row starts where no box crosses the line) and within a row column by column; figures and references are numbered in this order.
 
